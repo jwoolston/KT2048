@@ -13,7 +13,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     abstract fun nativeGetChar(): Int
 
     fun processInput(c: Int): Boolean {
-        var success: Boolean = when (c) {
+        val success: Boolean = when (c) {
             97, 104, 68 -> moveLeft()    // 'a', 'h', 'left arrow' key
             100, 108, 67 -> moveRight()    // 'd', 'l', 'right arrow' key
             119, 107, 65 -> moveUp()    // 'w', 'k', 'up arrow' key
@@ -51,7 +51,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return false
     }
 
-    fun drawBoard() {
+    private fun drawBoard() {
         var color: CharArray
         val reset = charArrayOf(0x1B.toChar(), '[', 'm')
         print(charArrayOf(0x1B.toChar(), '[', 'H'))
@@ -100,7 +100,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         print(charArrayOf(0x1B.toChar(), '[', 'A'))
     }
 
-    fun findTarget(array: IntArray, x: Int, stop: Int): Int {
+    private fun findTarget(array: IntArray, x: Int, stop: Int): Int {
         // if the position is already on the first, don't evaluate
         if (x == 0) {
             return x
@@ -123,7 +123,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return x
     }
 
-    fun slideArray(array: IntArray): Boolean {
+    private fun slideArray(array: IntArray): Boolean {
         var success = false
         var stop = 0
 
@@ -148,10 +148,10 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                 }
             }
         }
-        return success;
+        return success
     }
 
-    fun rotateBoard() {
+    private fun rotateBoard() {
         for (i in 0 until size / 2 step 1) {
             for (j in i until size - i - 1 step 1) {
                 val tmp = board[i][j]
@@ -163,7 +163,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         }
     }
 
-    fun moveUp(): Boolean {
+    private fun moveUp(): Boolean {
         var success = false
         for (x in 0 until size) {
             success = success || slideArray(board[x])
@@ -171,7 +171,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return success
     }
 
-    fun moveLeft(): Boolean {
+    private fun moveLeft(): Boolean {
         rotateBoard()
         val success = moveUp()
         rotateBoard()
@@ -180,7 +180,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return success
     }
 
-    fun moveDown(): Boolean {
+    private fun moveDown(): Boolean {
         rotateBoard()
         rotateBoard()
         val success = moveUp()
@@ -189,7 +189,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return success
     }
 
-    fun moveRight(): Boolean {
+    private fun moveRight(): Boolean {
         rotateBoard()
         rotateBoard()
         rotateBoard()
@@ -198,18 +198,17 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return success
     }
 
-    fun findPairDown(): Boolean {
-        var success = false
+    private fun findPairDown(): Boolean {
         for (x in 0 until size) {
             for (y in 0 until size) {
                 if (board[x][y] == board[x][y + 1]) return true
             }
-            return success
+            return false
         }
-        return success
+        return false
     }
 
-    fun countEmpty(): Int {
+    private fun countEmpty(): Int {
         var count = 0
         for (x in 0 until size) {
             for (y in 0 until size) {
@@ -222,7 +221,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return count
     }
 
-    fun gameEnded(): Boolean {
+    private fun gameEnded(): Boolean {
         var ended = true
         if (countEmpty() > 0) return false
         if (findPairDown()) return false
@@ -234,9 +233,9 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         return ended
     }
 
-    fun addRandom() {
+    private fun addRandom() {
         var len = 0
-        var list = Array(size * size) { IntArray(2) }
+        val list = Array(size * size) { IntArray(2) }
 
         for (x in 0 until size) {
             for (y in 0 until size) {
@@ -248,11 +247,11 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
             }
 
             if (len > 0) {
-                var r = Random.nextInt().absoluteValue % len
-                val x = list[r][0]
-                val y = list[r][1]
+                val r = Random.nextInt().absoluteValue % len
+                val new_x = list[r][0]
+                val new_y = list[r][1]
                 val n = (Random.nextInt().absoluteValue % 10) / 9 + 1
-                board[x][y] = n
+                board[new_x][new_y] = n
             }
         }
     }
@@ -269,7 +268,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         score = 0
     }
 
-    fun getColor(value: Int): CharArray {
+    private fun getColor(value: Int): CharArray {
         val original = arrayOf(
             8,
             255,
