@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 abstract class GameBoard(private val size: Int, private val scheme: Int) {
 
-    var score = 0
+    private var score = 0
 
     private var board = Array(size) { IntArray(size) }
 
@@ -13,14 +13,13 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     abstract fun nativeGetChar(): Int
 
     fun processInput(c: Int): Boolean {
-        var success: Boolean
-        when (c) {
-            97, 104, 68 -> success = moveLeft()    // 'a', 'h', 'left arrow' key
-            100, 108, 67 -> success = moveRight()    // 'd', 'l', 'right arrow' key
-            119, 107, 65 -> success = moveUp()    // 'w', 'k', 'up arrow' key
-            115, 106, 66 -> success = moveDown() // 's', 'j', 'down arrow' key
+        var success: Boolean = when (c) {
+            97, 104, 68 -> moveLeft()    // 'a', 'h', 'left arrow' key
+            100, 108, 67 -> moveRight()    // 'd', 'l', 'right arrow' key
+            119, 107, 65 -> moveUp()    // 'w', 'k', 'up arrow' key
+            115, 106, 66 -> moveDown() // 's', 'j', 'down arrow' key
             else -> {
-                success = false
+                false
             }
         }
         if (success) {
@@ -98,7 +97,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         }
         print("\n")
         print("        ←,↑,→,↓ or q        \n")
-        print("\\033[A") // one line up
+        print(charArrayOf(0x1B.toChar(), '[', 'A'))
     }
 
     fun findTarget(array: IntArray, x: Int, stop: Int): Int {
