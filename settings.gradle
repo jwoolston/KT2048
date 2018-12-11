@@ -1,0 +1,4 @@
+
+include ':jvm'
+
+enableFeaturePreview('GRADLE_METADATA')

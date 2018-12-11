@@ -1,0 +1,32 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.3.12"
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'com.jwoolston.kt2048.jvm.Main'
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //implementation "com.intellij:forms_rt:7.0.3"
+    //implementation project(':common')
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.jwoolston.kt2048.jvm.Main'
+    }
+
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
