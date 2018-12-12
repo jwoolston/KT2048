@@ -1,6 +1,7 @@
 package com.jwoolston.kt2048.jvm
 
-import com.jwoolston.kt2048.JVMBoard
+import com.jwoolston.kt2048.core.FIRST_LINE
+import com.jwoolston.kt2048.core.LAST_LINE
 
 class Main {
 
@@ -9,7 +10,7 @@ class Main {
         @JvmStatic
         fun main(args: Array<String>) {
 
-            val board = JVMBoard(4, 0)
+            val board = JVMBoard(4)
 
             System.out.write(FIRST_LINE)
 
@@ -27,30 +28,5 @@ class Main {
 
             System.out.write(LAST_LINE)
         }
-
-        val FIRST_LINE = byteArrayOf(
-            0x1B.toByte(), // Escape Char
-            0x5B.toByte(), // [
-            0x3F.toByte(), // ?
-            0x32.toByte(), // 2
-            0x35.toByte(), // 5
-            0x6C.toByte(), // l
-            0x1B.toByte(), // Escape Char
-            0x5B.toByte(), // [
-            0x32.toByte(), // 2
-            0x4A.toByte()  // J
-        )
-
-        val LAST_LINE = byteArrayOf(
-            0x1B.toByte(), // Escape Char
-            0x5B.toByte(), // [
-            0x3F.toByte(), // ?
-            0x32.toByte(), // 2
-            0x35.toByte(), // 5
-            0x68.toByte(), // h
-            0x1B.toByte(), // Escape Char
-            0x5B.toByte(), // [
-            0x6D.toByte()  // m
-        )
     }
 }

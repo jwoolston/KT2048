@@ -8,9 +8,8 @@ apply plugin: 'application'
 mainClassName = 'com.jwoolston.kt2048.jvm.Main'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    //implementation "com.intellij:forms_rt:7.0.3"
-    //implementation project(':common')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation project(':core')
 }
 
 sourceSets {

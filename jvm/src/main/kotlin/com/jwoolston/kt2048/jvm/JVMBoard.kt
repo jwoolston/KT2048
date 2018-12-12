@@ -1,6 +1,8 @@
-package com.jwoolston.kt2048
+package com.jwoolston.kt2048.jvm
 
-class JVMBoard(size: Int, scheme: Int) : GameBoard(size, scheme) {
+import com.jwoolston.kt2048.core.GameBoard
+
+class JVMBoard(size: Int) : GameBoard(size) {
 
     override fun nativeSleep(time: Int) {
         Thread.sleep(time.toLong())

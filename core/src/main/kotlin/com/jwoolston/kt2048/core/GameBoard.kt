@@ -1,11 +1,10 @@
-package com.jwoolston.kt2048
+package com.jwoolston.kt2048.core
 
-import java.io.File
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
-abstract class GameBoard(private val size: Int, private val scheme: Int) {
+abstract class GameBoard(private val size: Int) {
 
     private var score = 0
 
@@ -26,7 +25,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         }
         if (success) {
             drawBoard()
-            //nativeSleep(150)
+            nativeSleep(150)
             addRandom()
             drawBoard()
             if (gameEnded()) {
@@ -312,3 +311,28 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         )
     }
 }
+
+val FIRST_LINE = byteArrayOf(
+    0x1B.toByte(), // Escape Char
+    0x5B.toByte(), // [
+    0x3F.toByte(), // ?
+    0x32.toByte(), // 2
+    0x35.toByte(), // 5
+    0x6C.toByte(), // l
+    0x1B.toByte(), // Escape Char
+    0x5B.toByte(), // [
+    0x32.toByte(), // 2
+    0x4A.toByte()  // J
+)
+
+val LAST_LINE = byteArrayOf(
+    0x1B.toByte(), // Escape Char
+    0x5B.toByte(), // [
+    0x3F.toByte(), // ?
+    0x32.toByte(), // 2
+    0x35.toByte(), // 5
+    0x68.toByte(), // h
+    0x1B.toByte(), // Escape Char
+    0x5B.toByte(), // [
+    0x6D.toByte()  // m
+)
