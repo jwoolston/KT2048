@@ -11,8 +11,6 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
 
     private var board = Array(size) { IntArray(size) }
 
-    val file = File("/home/jared/log.txt")
-
     abstract fun nativeSleep(time: Int)
     abstract fun nativeGetChar(): Byte
 
@@ -28,7 +26,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         }
         if (success) {
             drawBoard()
-            nativeSleep(150)
+            //nativeSleep(150)
             addRandom()
             drawBoard()
             if (gameEnded()) {
@@ -56,14 +54,12 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     }
 
     private fun drawBoard() {
-        file.appendText("Draw board\n")
         val reset = byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x6D.toByte()) // Escape, [, m
         System.out.write(byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x48.toByte())) // Escape, [, H
 
         System.out.print("2048 Kotlin $score pts\n\n")
 
         for (y in 0 until size) {
-            file.appendText("Writing row $y\n")
             for (x in 0 until size) {
                 System.out.write(getColor(board[x][y]))
                 System.out.print("       ")
@@ -79,14 +75,12 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                     for (i in 0 until (t - t / 2)) {
                         builder.append(' ')
                     }
-                    file.appendText("Count: $s\n")
                     builder.append(s)
                     for (i in 0 until t / 2) {
                         builder.append(' ')
                     }
                     System.out.print(builder.toString())
                 } else {
-                    file.appendText("Count: 0\n")
                     System.out.print("   ·   ")
                 }
                 System.out.write(reset)
@@ -109,7 +103,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         if (x == 0) {
             return x
         }
-        for (t in x - 1 downTo 0 step 1) {
+        for (t in (x - 1) downTo 0) {
             if (array[t] != 0) {
                 if (array[t] != array[x]) {
                     // merge is not possible, take next position
@@ -143,7 +137,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                         // merge (increase power of two)
                         array[t]++
                         // increase score
-                        score += array[t].shl(1)
+                        score += 1.shl(array[t])
                         // set stop to avoid double merge
                         stop = t + 1
                     }
@@ -156,8 +150,8 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     }
 
     private fun rotateBoard() {
-        for (i in 0 until size / 2 step 1) {
-            for (j in i until size - i - 1 step 1) {
+        for (i in 0 until (size / 2)) {
+            for (j in i until (size - i - 1)) {
                 val tmp = board[i][j]
                 board[i][j] = board[j][size - i - 1]
                 board[j][size - i - 1] = board[size - i - 1][size - j - 1]
@@ -170,7 +164,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     private fun moveUp(): Boolean {
         var success = false
         for (x in 0 until size) {
-            success = success || slideArray(board[x])
+            success = slideArray(board[x]) || success
         }
         return success
     }
@@ -204,10 +198,9 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
 
     private fun findPairDown(): Boolean {
         for (x in 0 until size) {
-            for (y in 0 until size) {
+            for (y in 0 until (size - 1)) {
                 if (board[x][y] == board[x][y + 1]) return true
             }
-            return false
         }
         return false
     }
@@ -220,7 +213,6 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                     count++
                 }
             }
-            return count
         }
         return count
     }
@@ -249,14 +241,14 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                     len++
                 }
             }
+        }
 
-            if (len > 0) {
-                val r = Random.nextInt().absoluteValue % len
-                val new_x = list[r][0]
-                val new_y = list[r][1]
-                val n = (Random.nextInt().absoluteValue % 10) / 9 + 1
-                board[new_x][new_y] = n
-            }
+        if (len > 0) {
+            val r = Random.nextInt().absoluteValue % len
+            val new_x = list[r][0]
+            val new_y = list[r][1]
+            val n = (Random.nextInt().absoluteValue % 10) / 9 + 1
+            board[new_x][new_y] = n
         }
     }
 
@@ -295,22 +287,11 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
             6, // 1024
             255,
             202, // 2048
-            0,
-            12,
-            0,
-            13,
-            0,
-            14,
-            0,
-            255,
-            0,
-            255,
             0
         )
 
         var backgroundIdx = 2 * value
         var foregroundIdx = backgroundIdx + 1
-        file.appendText("Value: $value Background Color: ${colors[backgroundIdx]}\n")
         return byteArrayOf(
             0x1B.toByte(), // Escape Char
             0x5B.toByte(), // [

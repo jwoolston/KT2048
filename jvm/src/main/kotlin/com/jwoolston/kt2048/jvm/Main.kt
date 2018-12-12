@@ -18,7 +18,6 @@ class Main {
             while (true) {
                 val c = board.nativeGetChar()
                 if (c == (-1).toByte()) {
-                    println("\nError! Cannot read keyboard input!")
                     break
                 }
                 if (board.processInput(c)) {
