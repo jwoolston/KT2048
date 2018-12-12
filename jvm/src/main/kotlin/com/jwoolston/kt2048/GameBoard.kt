@@ -394,14 +394,14 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
             ';',
             '5',
             ';',
-            foreground[foregroundIdx].toChar(),
+            0x00.toChar(), //foreground[foregroundIdx].toChar(),
             ';',
             '4',
             '8',
             ';',
             '5',
             ';',
-            background[backgroundIdx].toChar(),
+            0xFF.toChar(), //background[backgroundIdx].toChar(),
             'm'
         )
     }

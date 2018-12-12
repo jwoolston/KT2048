@@ -14,9 +14,6 @@ class Main {
 
             board.initBoard()
 
-            /*for (char in FIRST_LINE) {
-                print(char)
-            }*/
             print(FIRST_LINE)
 
             while (true) {
@@ -30,9 +27,6 @@ class Main {
                 }
             }
 
-            /*for (char in LAST_LINE) {
-                print(char)
-            }*/
             print(LAST_LINE)
         }
 
