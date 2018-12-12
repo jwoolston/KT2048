@@ -3,6 +3,7 @@ BOARD=$1
 export ZEPHYR_SDK_INSTALL_DIR=$2
 export ZEPHYR_BASE=$3
 export KONAN_DEPS="$HOME/.konan/dependencies"
+export PATH="$HOME/kotlin-native/bin:$PATH"
 SCRIPT=$4
 
 DIR=$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )

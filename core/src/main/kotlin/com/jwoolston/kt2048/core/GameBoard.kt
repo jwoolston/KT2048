@@ -12,6 +12,8 @@ abstract class GameBoard(private val size: Int) {
 
     abstract fun nativeSleep(time: Int)
     abstract fun nativeGetChar(): Byte
+    abstract fun nativePrint(array: ByteArray)
+    abstract fun nativePrint(message: String)
 
     fun processInput(c: Byte): Boolean {
         val success: Boolean = when (c) {
@@ -29,12 +31,12 @@ abstract class GameBoard(private val size: Int) {
             addRandom()
             drawBoard()
             if (gameEnded()) {
-                System.out.print("         GAME OVER          \n")
+                nativePrint("         GAME OVER          \n")
                 return true
             }
         }
         if (c == 0x71.toByte()) { // q
-            System.out.print("        QUIT? (y/n)         \n")
+            nativePrint("        QUIT? (y/n)         \n")
             val r = nativeGetChar()
             if (r == 0x79.toByte()) { // y
                 return true
@@ -42,7 +44,7 @@ abstract class GameBoard(private val size: Int) {
             drawBoard()
         }
         if (c == 0x72.toByte()) {
-            System.out.print("       RESTART? (y/n)       \n")
+            nativePrint("       RESTART? (y/n)       \n")
             val r = nativeGetChar()
             if (r == 0x79.toByte()) { // y
                 initBoard()
@@ -56,15 +58,15 @@ abstract class GameBoard(private val size: Int) {
         val reset = byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x6D.toByte()) // Escape, [, m
         System.out.write(byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x48.toByte())) // Escape, [, H
 
-        System.out.print("2048 Kotlin $score pts\n\n")
+        nativePrint("2048 Kotlin $score pts\n\n")
 
         for (y in 0 until size) {
             for (x in 0 until size) {
                 System.out.write(getColor(board[x][y]))
-                System.out.print("       ")
+                nativePrint("       ")
                 System.out.write(reset)
             }
-            System.out.print("\n")
+            nativePrint("\n")
             for (x in 0 until size) {
                 System.out.write(getColor(board[x][y]))
                 if (board[x][y] != 0) {
@@ -78,22 +80,22 @@ abstract class GameBoard(private val size: Int) {
                     for (i in 0 until t / 2) {
                         builder.append(' ')
                     }
-                    System.out.print(builder.toString())
+                    nativePrint(builder.toString())
                 } else {
-                    System.out.print("   ·   ")
+                    nativePrint("   ·   ")
                 }
                 System.out.write(reset)
             }
-            System.out.print("\n")
+            nativePrint("\n")
             for (x in 0 until size) {
                 System.out.write(getColor(board[x][y]))
-                System.out.print("       ")
+                nativePrint("       ")
                 System.out.write(reset)
             }
-            System.out.print("\n")
+            nativePrint("\n")
         }
-        System.out.print("\n")
-        System.out.print("        ←,↑,→,↓ or q        \n")
+        nativePrint("\n")
+        nativePrint("        ←,↑,→,↓ or q        \n")
         System.out.write(byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x41.toByte())) // Escape, [, A
     }
 
@@ -299,14 +301,14 @@ abstract class GameBoard(private val size: Int) {
             0x3B.toByte(), // ;
             0x35.toByte(), // 5
             0x3B.toByte(), // ;
-            *colors[foregroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
+            *colors[foregroundIdx].toString(10).toByteArray(Charsets.US_ASCII),
             0x3B.toByte(), // ;
             0x34.toByte(), // 4
             0x38.toByte(), // 8
             0x3B.toByte(), // ;
             0x35.toByte(), // 5
             0x3B.toByte(), // ;
-            *colors[backgroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
+            *colors[backgroundIdx].toString(10).toByteArray(Charsets.US_ASCII),
             0x6D.toByte() // m
         )
     }

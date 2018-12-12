@@ -2,12 +2,14 @@ package com.jwoolston.kt2048.native
 
 import com.jwoolston.kt2048.core.FIRST_LINE
 import com.jwoolston.kt2048.core.LAST_LINE
+import platform.zephyr.stm32f4_disco.*
 
-fun main(args: Array<String>) {
+fun main() {
 
     val board = STM32F4Board(4)
+    console_init()
 
-    System.out.write(FIRST_LINE)
+    board.nativePrint(FIRST_LINE)
 
     board.initBoard()
 
@@ -21,5 +23,5 @@ fun main(args: Array<String>) {
         }
     }
 
-    System.out.write(LAST_LINE)
+    board.nativePrint(LAST_LINE)
 }

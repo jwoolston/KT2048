@@ -12,7 +12,7 @@ class Main {
 
             val board = JVMBoard(4)
 
-            System.out.write(FIRST_LINE)
+            board.nativePrint(FIRST_LINE)
 
             board.initBoard()
 
@@ -26,7 +26,7 @@ class Main {
                 }
             }
 
-            System.out.write(LAST_LINE)
+            board.nativePrint(LAST_LINE)
         }
     }
 }
