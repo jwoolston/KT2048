@@ -273,28 +273,28 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     }
 
     private fun getColor(value: Int): ByteArray {
-        val original = arrayOf(
-            8,
+        val colors = arrayOf(
+            8, //0
             255,
-            1,
+            9, // 2
             255,
-            2,
+            10, // 8
             255,
-            3,
+            11, // 16
             255,
-            4,
+            12, // 32
             255,
-            5,
+            13, // 64
             255,
-            6,
-            255,
-            7,
-            255,
-            9,
+            14, // 128
             0,
-            10,
-            0,
-            11,
+            0, // 256
+            255,
+            5, // 512
+            255,
+            6, // 1024
+            255,
+            202, // 2048
             0,
             12,
             0,
@@ -307,106 +307,26 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
             255,
             0
         )
-        val blackwhite = arrayOf(
-            232,
-            255,
-            234,
-            255,
-            236,
-            255,
-            238,
-            255,
-            240,
-            255,
-            242,
-            255,
-            244,
-            255,
-            246,
-            0,
-            248,
-            0,
-            249,
-            0,
-            250,
-            0,
-            251,
-            0,
-            252,
-            0,
-            253,
-            0,
-            254,
-            0,
-            255,
-            0
-        )
-        val bluered = arrayOf(
-            235,
-            255,
-            63,
-            255,
-            57,
-            255,
-            93,
-            255,
-            129,
-            255,
-            165,
-            255,
-            201,
-            255,
-            200,
-            255,
-            199,
-            255,
-            198,
-            255,
-            197,
-            255,
-            196,
-            255,
-            196,
-            255,
-            196,
-            255,
-            196,
-            255,
-            196,
-            255
-        )
-        val schemes = arrayOf(original, blackwhite, bluered)
-        val background = schemes[scheme] + 0
-        val foreground = schemes[scheme] + 1
-        var count = value
-        var backgroundIdx = 0
-        var foregroundIdx = 0
-        if (count > 0) {
-            while (count > 0) {
-                if ((backgroundIdx + 2) < (schemes[scheme][original.size - 1])) {
-                    backgroundIdx += 2
-                    foregroundIdx += 2
-                }
-                count--
-            }
-        }
-        file.appendText("Value: $value Foreground Color: ${foreground[foregroundIdx]}Background Color: ${background[backgroundIdx]}")
+
+        var backgroundIdx = 2 * value
+        var foregroundIdx = backgroundIdx + 1
+        file.appendText("Value: $value Background Color: ${colors[backgroundIdx]}\n")
         return byteArrayOf(
             0x1B.toByte(), // Escape Char
             0x5B.toByte(), // [
-            0x33.toByte(), // 3,
+            0x33.toByte(), // 3
             0x38.toByte(), // 8
             0x3B.toByte(), // ;
             0x35.toByte(), // 5
             0x3B.toByte(), // ;
-            *foreground[foregroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
+            *colors[foregroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
             0x3B.toByte(), // ;
             0x34.toByte(), // 4
             0x38.toByte(), // 8
             0x3B.toByte(), // ;
             0x35.toByte(), // 5
             0x3B.toByte(), // ;
-            *background[backgroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
+            *colors[backgroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
             0x6D.toByte() // m
         )
     }
