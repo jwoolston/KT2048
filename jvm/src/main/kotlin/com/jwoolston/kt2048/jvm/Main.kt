@@ -5,20 +5,19 @@ import com.jwoolston.kt2048.JVMBoard
 class Main {
 
     companion object {
+
         @JvmStatic
         fun main(args: Array<String>) {
 
             val board = JVMBoard(4, 0)
 
-            var c: Int
+            System.out.write(FIRST_LINE)
 
             board.initBoard()
 
-            print(FIRST_LINE)
-
             while (true) {
-                c = board.nativeGetChar()
-                if (c == -1) {
+                val c = board.nativeGetChar()
+                if (c == (-1).toByte()) {
                     println("\nError! Cannot read keyboard input!")
                     break
                 }
@@ -27,32 +26,32 @@ class Main {
                 }
             }
 
-            print(LAST_LINE)
+            System.out.write(LAST_LINE)
         }
 
-        val FIRST_LINE = charArrayOf(
-            0x1B.toChar(),
-            '[',
-            '?',
-            '2',
-            '5',
-            'l',
-            0x1B.toChar(),
-            '[',
-            '2',
-            'J'
+        val FIRST_LINE = byteArrayOf(
+            0x1B.toByte(), // Escape Char
+            0x5B.toByte(), // [
+            0x3F.toByte(), // ?
+            0x32.toByte(), // 2
+            0x35.toByte(), // 5
+            0x6C.toByte(), // l
+            0x1B.toByte(), // Escape Char
+            0x5B.toByte(), // [
+            0x32.toByte(), // 2
+            0x4A.toByte()  // J
         )
 
-        val LAST_LINE = charArrayOf(
-            0x1B.toChar(),
-            '[',
-            '?',
-            '2',
-            '5',
-            'h',
-            0x1B.toChar(),
-            '[',
-            'm'
+        val LAST_LINE = byteArrayOf(
+            0x1B.toByte(), // Escape Char
+            0x5B.toByte(), // [
+            0x3F.toByte(), // ?
+            0x32.toByte(), // 2
+            0x35.toByte(), // 5
+            0x68.toByte(), // h
+            0x1B.toByte(), // Escape Char
+            0x5B.toByte(), // [
+            0x6D.toByte()  // m
         )
     }
 }

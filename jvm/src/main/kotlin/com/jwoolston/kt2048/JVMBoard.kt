@@ -7,10 +7,10 @@ class JVMBoard(size: Int, scheme: Int) : GameBoard(size, scheme) {
     val scanner = Scanner(System.`in`)
 
     override fun nativeSleep(time: Int) {
-        Thread.sleep(time.toLong() / 1000)
+        Thread.sleep(time.toLong())
     }
 
-    override fun nativeGetChar(): Int {
-        return scanner.nextByte().toInt()
+    override fun nativeGetChar(): Byte {
+        return scanner.nextByte()
     }
 }

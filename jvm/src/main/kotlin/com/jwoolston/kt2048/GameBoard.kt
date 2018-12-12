@@ -1,5 +1,6 @@
 package com.jwoolston.kt2048
 
+import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
@@ -10,40 +11,40 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     private var board = Array(size) { IntArray(size) }
 
     abstract fun nativeSleep(time: Int)
-    abstract fun nativeGetChar(): Int
+    abstract fun nativeGetChar(): Byte
 
-    fun processInput(c: Int): Boolean {
+    fun processInput(c: Byte): Boolean {
         val success: Boolean = when (c) {
-            97, 104, 68 -> moveLeft()    // 'a', 'h', 'left arrow' key
-            100, 108, 67 -> moveRight()    // 'd', 'l', 'right arrow' key
-            119, 107, 65 -> moveUp()    // 'w', 'k', 'up arrow' key
-            115, 106, 66 -> moveDown() // 's', 'j', 'down arrow' key
+            97.toByte(), 104.toByte(), 68.toByte() -> moveLeft()    // 'a', 'h', 'left arrow' key
+            100.toByte(), 108.toByte(), 67.toByte() -> moveRight()    // 'd', 'l', 'right arrow' key
+            119.toByte(), 107.toByte(), 65.toByte() -> moveUp()    // 'w', 'k', 'up arrow' key
+            115.toByte(), 106.toByte(), 66.toByte() -> moveDown() // 's', 'j', 'down arrow' key
             else -> {
                 false
             }
         }
         if (success) {
             drawBoard()
-            nativeSleep(150000)
+            nativeSleep(150)
             addRandom()
             drawBoard()
             if (gameEnded()) {
-                print("         GAME OVER          \n")
+                System.out.print("         GAME OVER          \n")
                 return true
             }
         }
-        if (c == 'q'.toInt()) {
-            print("        QUIT? (y/n)         \n")
+        if (c == 0x71.toByte()) { // q
+            System.out.print("        QUIT? (y/n)         \n")
             val r = nativeGetChar()
-            if (r == 'y'.toInt()) {
+            if (r == 0x79.toByte()) { // y
                 return true
             }
             drawBoard()
         }
-        if (c == 'r'.toInt()) {
-            print("       RESTART? (y/n)       \n")
+        if (c == 0x72.toByte()) {
+            System.out.print("       RESTART? (y/n)       \n")
             val r = nativeGetChar()
-            if (r == 'y'.toInt()) {
+            if (r == 0x79.toByte()) { // y
                 initBoard()
             }
             drawBoard()
@@ -52,25 +53,22 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     }
 
     private fun drawBoard() {
-        var color: CharArray
-        val reset = charArrayOf(0x1B.toChar(), '[', 'm')
-        print(charArrayOf(0x1B.toChar(), '[', 'H'))
+        val reset = byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x6D.toByte()) // Escape, [, m
+        System.out.write(byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x48.toByte())) // Escape, [, H
 
-        print("2048.c $score pts\n\n")
+        System.out.print("2048 Kotlin $score pts\n\n")
 
         for (y in 0 until size) {
             for (x in 0 until size) {
-                color = getColor(board[x][y])
-                print(color)
-                print("       ")
-                print(reset)
+                System.out.write(getColor(board[x][y]))
+                System.out.print("       ")
+                System.out.write(reset)
             }
-            print("\n")
+            System.out.print("\n")
             for (x in 0 until size) {
-                color = getColor(board[x][y])
-                print(color)
+                System.out.write(getColor(board[x][y]))
                 if (board[x][y] != 0) {
-                    val s = board[x][y].shl(1).toString()
+                    val s = 1.shl(board[x][y]).toString()
                     val t = 7 - s.length
                     val builder = StringBuilder()
                     for (i in 0 until (t - t / 2)) {
@@ -80,24 +78,23 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                     for (i in 0 until t / 2) {
                         builder.append(' ')
                     }
-                    print(builder.toString())
+                    System.out.print(builder.toString())
                 } else {
-                    print("   ·   ")
+                    System.out.print("   ·   ")
                 }
-                print(reset)
+                System.out.write(reset)
             }
-            print("\n")
+            System.out.print("\n")
             for (x in 0 until size) {
-                color = getColor(board[x][y])
-                print(color)
-                print("       ")
-                print(reset)
+                System.out.write(getColor(board[x][y]))
+                System.out.print("       ")
+                System.out.write(reset)
             }
-            print("\n")
+            System.out.print("\n")
         }
-        print("\n")
-        print("        ←,↑,→,↓ or q        \n")
-        print(charArrayOf(0x1B.toChar(), '[', 'A'))
+        System.out.print("\n")
+        System.out.print("        ←,↑,→,↓ or q        \n")
+        System.out.write(byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x41.toByte())) // Escape, [, A
     }
 
     private fun findTarget(array: IntArray, x: Int, stop: Int): Int {
@@ -268,7 +265,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         score = 0
     }
 
-    private fun getColor(value: Int): CharArray {
+    private fun getColor(value: Int): ByteArray {
         val original = arrayOf(
             8,
             255,
@@ -378,7 +375,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
         var backgroundIdx = 0
         var foregroundIdx = 0
         if (count > 0) {
-            while (value > 0) {
+            while (count > 0) {
                 if ((backgroundIdx + 2) < (schemes[scheme][original.size - 1])) {
                     backgroundIdx += 2
                     foregroundIdx += 2
@@ -386,23 +383,23 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                 count--
             }
         }
-        return charArrayOf(
-            0x1B.toChar(),
-            '[',
-            '3',
-            '8',
-            ';',
-            '5',
-            ';',
-            0x00.toChar(), //foreground[foregroundIdx].toChar(),
-            ';',
-            '4',
-            '8',
-            ';',
-            '5',
-            ';',
-            0xFF.toChar(), //background[backgroundIdx].toChar(),
-            'm'
+        return byteArrayOf(
+            0x1B.toByte(), // Escape Char
+            0x5B.toByte(), // [
+            0x33.toByte(), // 3,
+            0x38.toByte(), // 8
+            0x3B.toByte(), // ;
+            0x35.toByte(), // 5
+            0x3B.toByte(), // ;
+            *foreground[foregroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
+            0x3B.toByte(), // ;
+            0x34.toByte(), // 4
+            0x38.toByte(), // 8
+            0x3B.toByte(), // ;
+            0x35.toByte(), // 5
+            0x3B.toByte(), // ;
+            *background[backgroundIdx].toString(10).toByteArray(Charset.forName("ASCII")),
+            0x6D.toByte() // m
         )
     }
 }
