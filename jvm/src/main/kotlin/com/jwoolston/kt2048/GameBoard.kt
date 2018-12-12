@@ -1,5 +1,6 @@
 package com.jwoolston.kt2048
 
+import java.io.File
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 import kotlin.random.Random
@@ -9,6 +10,8 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     private var score = 0
 
     private var board = Array(size) { IntArray(size) }
+
+    val file = File("/home/jared/log.txt")
 
     abstract fun nativeSleep(time: Int)
     abstract fun nativeGetChar(): Byte
@@ -53,12 +56,14 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
     }
 
     private fun drawBoard() {
+        file.appendText("Draw board\n")
         val reset = byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x6D.toByte()) // Escape, [, m
         System.out.write(byteArrayOf(0x1B.toByte(), 0x5B.toByte(), 0x48.toByte())) // Escape, [, H
 
         System.out.print("2048 Kotlin $score pts\n\n")
 
         for (y in 0 until size) {
+            file.appendText("Writing row $y\n")
             for (x in 0 until size) {
                 System.out.write(getColor(board[x][y]))
                 System.out.print("       ")
@@ -74,12 +79,14 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                     for (i in 0 until (t - t / 2)) {
                         builder.append(' ')
                     }
+                    file.appendText("Count: $s\n")
                     builder.append(s)
                     for (i in 0 until t / 2) {
                         builder.append(' ')
                     }
                     System.out.print(builder.toString())
                 } else {
+                    file.appendText("Count: 0\n")
                     System.out.print("   ·   ")
                 }
                 System.out.write(reset)
@@ -383,6 +390,7 @@ abstract class GameBoard(private val size: Int, private val scheme: Int) {
                 count--
             }
         }
+        file.appendText("Value: $value Foreground Color: ${foreground[foregroundIdx]}Background Color: ${background[backgroundIdx]}")
         return byteArrayOf(
             0x1B.toByte(), // Escape Char
             0x5B.toByte(), // [
